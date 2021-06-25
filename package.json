@@ -1,0 +1,21 @@
+{
+  "name": "@recordreplay/replay-node-cli",
+  "version": "0.1.2",
+  "description": "CLI tool for creating recordings using the replay version of node",
+  "bin": {
+    "replay-node": "bin/replay-node"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RecordReplay/replay-node-cli.git"
+  },
+  "author": "",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/RecordReplay/replay-node-cli/issues"
+  },
+  "homepage": "https://github.com/RecordReplay/replay-node-cli#readme"
+}
