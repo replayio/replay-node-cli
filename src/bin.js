@@ -62,7 +62,7 @@ async function main() {
   }
 
   const rv = spawnSync(`${getDirectory()}/node/node`, argv, { stdio: "inherit" });
-  return rv.status;
+  process.exit(rv.status);
 }
 
 async function updateNode() {
