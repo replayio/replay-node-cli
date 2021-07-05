@@ -95,10 +95,12 @@ async function updateNode() {
 
   console.log(`Downloading ${file}...`);
   const nodeContents = await downloadFile(file);
+  unlinkIfExists(pathNode);
   fs.writeFileSync(pathNode, nodeContents, { mode: 0o777 });
   if (!jsonContents) {
     jsonContents = await downloadFile(`${file}.json`);
   }
+  unlinkIfExists(pathJSON);
   fs.writeFileSync(pathJSON, jsonContents);
   console.log("Downloaded.");
 }
@@ -141,4 +143,10 @@ function defer() {
     reject = rej;
   });
   return { promise, resolve, reject };
+}
+
+function unlinkIfExists(path) {
+  if (fs.existsSync(path)) {
+    fs.unlinkSync(path);
+  }
 }

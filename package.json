@@ -1,6 +1,6 @@
 {
   "name": "@recordreplay/replay-node-cli",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "CLI tool for creating recordings using the replay version of node",
   "bin": {
     "replay-node": "bin/replay-node"
