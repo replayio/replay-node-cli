@@ -58,7 +58,7 @@ async function main() {
     process.env.PATH = `${getDirectory()}/node:` + process.env.PATH;
 
     const rv = spawnSync(argv[0], argv.slice(1), { stdio: "inherit" });
-    return rv.status;
+    process.exit(rv.status);
   }
 
   const rv = spawnSync(`${getDirectory()}/node/node`, argv, { stdio: "inherit" });
