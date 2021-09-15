@@ -107,7 +107,7 @@ async function updateNode() {
 
 async function downloadFile(downloadFile) {
   const options = {
-    host: "replay.io",
+    host: "static.replay.io",
     port: 443,
     path: `/downloads/${downloadFile}`,
   };
