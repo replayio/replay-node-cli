@@ -42,6 +42,10 @@ if (argv[0] == "--update") {
 
 main();
 
+function getNodeDirectory() {
+  return process.env.RECORD_REPLAY_NODE_DIRECTORY || `${getDirectory()}/node`;
+}
+
 function getDirectory() {
   return process.env.RECORD_REPLAY_DIRECTORY || `${process.env.HOME}/.replay`;
 }
@@ -55,13 +59,15 @@ async function main() {
   if (gExecutable) {
     // Update the path so that the replay version of node is found first when
     // subprocesses run.
-    process.env.PATH = `${getDirectory()}/node:` + process.env.PATH;
+    process.env.PATH = `${getNodeDirectory()}:` + process.env.PATH;
 
     const rv = spawnSync(argv[0], argv.slice(1), { stdio: "inherit" });
     process.exit(rv.status);
   }
 
-  const rv = spawnSync(`${getDirectory()}/node/node`, argv, { stdio: "inherit" });
+  const rv = spawnSync(`${getNodeDirectory()}/node`, argv, {
+    stdio: "inherit",
+  });
   process.exit(rv.status);
 }
 
@@ -69,6 +75,20 @@ async function updateNode() {
   if (!fs.existsSync(getDirectory())) {
     fs.mkdirSync(getDirectory());
   }
+
+  if (process.env.RECORD_REPLAY_NODE_DIRECTORY) {
+    if (!fs.existsSync(`${process.env.RECORD_REPLAY_NODE_DIRECTORY}/node`)) {
+      throw new Error(
+        `Environment variable for a manually managed "RECORD_REPLAY_NODE_DIRECTORY" was specified, but no "node" binary could be found there. Exiting`
+      );
+    }
+    if (gNeedUpdate) {
+      throw new Error(`Manually managed binaries (as specified per "RECORD_REPLAY_NODE_DIRECTORY" will not be updated by this cli.)`);
+    }
+    // manually managed binaries should not be updated by this script
+    return;
+  }
+
   if (!fs.existsSync(`${getDirectory()}/node`)) {
     fs.mkdirSync(`${getDirectory()}/node`);
   }
