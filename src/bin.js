@@ -76,30 +76,23 @@ async function updateNode() {
     fs.mkdirSync(getDirectory());
   }
 
-  if (process.env.RECORD_REPLAY_NODE_DIRECTORY) {
-    if (!fs.existsSync(`${process.env.RECORD_REPLAY_NODE_DIRECTORY}/node`)) {
-      throw new Error(
-        `Environment variable for a manually managed "RECORD_REPLAY_NODE_DIRECTORY" was specified, but no "node" binary could be found there. Exiting`
-      );
-    }
-    if (gNeedUpdate) {
-      throw new Error(`Manually managed binaries (as specified per "RECORD_REPLAY_NODE_DIRECTORY" will not be updated by this cli.)`);
-    }
-    // manually managed binaries should not be updated by this script
-    return;
-  }
-
-  if (!fs.existsSync(`${getDirectory()}/node`)) {
-    fs.mkdirSync(`${getDirectory()}/node`);
+  if (!fs.existsSync(`${getNodeDirectory()}`)) {
+    fs.mkdirSync(`${getNodeDirectory()}`);
   }
 
   const file = `${currentPlatform()}-replay-node`;
 
-  const pathNode = `${getDirectory()}/node/node`;
-  const pathJSON = `${getDirectory()}/node/node.json`;
+  const pathNode = `${getNodeDirectory()}/node`;
+  const pathJSON = `${getNodeDirectory()}/node.json`;
 
   if (!gNeedUpdate && fs.existsSync(pathNode)) {
     return;
+  }
+
+  if (fs.existsSync(pathNode) !== fs.existsSync(pathJSON)) {
+    throw new Error(`Only one of the two files "node" and "node.json" exists in ${getNodeDirectory()}. 
+This indicates that those files are not managed by this update script, but by you manually - this script will now exit. 
+If you want this script to take over, remove the remaining file and restart the update process.`);
   }
 
   let jsonContents;

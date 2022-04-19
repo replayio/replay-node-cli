@@ -30,8 +30,6 @@ Ensure the replay version of node is downloaded/updated.
 
 - RECORD_REPLAY_DIRECTORY (defaults to $HOME/.replay)
 - RECORD_REPLAY_NODE_DIRECTORY (defaults to $RECORD_REPLAY_DIRECTORY/node)
-  Allows to specify a folder in which the `node` binary is to be found.
-  Specifying this environment variable means you take control over that binary - the script will only use it, but never update it.
+  Allows to specify a folder in which the replay-patched `node` binary is to be found.
 - RECORD_REPLAY_DRIVER
   Allows you to specify the path to the `recordreplay.so` driver library.
-  Specifying this environment variable means you take control over that library file - the script will use it, but never update it.
