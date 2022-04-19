@@ -42,6 +42,10 @@ if (argv[0] == "--update") {
 
 main();
 
+function getNodeDirectory() {
+  return process.env.RECORD_REPLAY_NODE_DIRECTORY || `${getDirectory()}/node`;
+}
+
 function getDirectory() {
   return process.env.RECORD_REPLAY_DIRECTORY || `${process.env.HOME}/.replay`;
 }
@@ -55,13 +59,15 @@ async function main() {
   if (gExecutable) {
     // Update the path so that the replay version of node is found first when
     // subprocesses run.
-    process.env.PATH = `${getDirectory()}/node:` + process.env.PATH;
+    process.env.PATH = `${getNodeDirectory()}:` + process.env.PATH;
 
     const rv = spawnSync(argv[0], argv.slice(1), { stdio: "inherit" });
     process.exit(rv.status);
   }
 
-  const rv = spawnSync(`${getDirectory()}/node/node`, argv, { stdio: "inherit" });
+  const rv = spawnSync(`${getNodeDirectory()}/node`, argv, {
+    stdio: "inherit",
+  });
   process.exit(rv.status);
 }
 
@@ -69,17 +75,24 @@ async function updateNode() {
   if (!fs.existsSync(getDirectory())) {
     fs.mkdirSync(getDirectory());
   }
-  if (!fs.existsSync(`${getDirectory()}/node`)) {
-    fs.mkdirSync(`${getDirectory()}/node`);
+
+  if (!fs.existsSync(`${getNodeDirectory()}`)) {
+    fs.mkdirSync(`${getNodeDirectory()}`);
   }
 
   const file = `${currentPlatform()}-replay-node`;
 
-  const pathNode = `${getDirectory()}/node/node`;
-  const pathJSON = `${getDirectory()}/node/node.json`;
+  const pathNode = `${getNodeDirectory()}/node`;
+  const pathJSON = `${getNodeDirectory()}/node.json`;
 
   if (!gNeedUpdate && fs.existsSync(pathNode)) {
     return;
+  }
+
+  if (fs.existsSync(pathNode) !== fs.existsSync(pathJSON)) {
+    throw new Error(`Only one of the two files "node" and "node.json" exists in ${getNodeDirectory()}. 
+This indicates that those files are not managed by this update script, but by you manually - this script will now exit. 
+If you want this script to take over, remove the remaining file and restart the update process.`);
   }
 
   let jsonContents;

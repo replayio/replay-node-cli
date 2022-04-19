@@ -25,3 +25,11 @@ Run an executable command with `$PATH` updated so that all node scripts will use
 `replay-node --update`
 
 Ensure the replay version of node is downloaded/updated.
+
+### Supported environment variables:
+
+- RECORD_REPLAY_DIRECTORY (defaults to $HOME/.replay)
+- RECORD_REPLAY_NODE_DIRECTORY (defaults to $RECORD_REPLAY_DIRECTORY/node)
+  Allows to specify a folder in which the replay-patched `node` binary is to be found.
+- RECORD_REPLAY_DRIVER
+  Allows you to specify the path to the `recordreplay.so` driver library.
